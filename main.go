@@ -13,10 +13,24 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var (
+	h bool
+	c string
+	d bool
+)
+
 func init() {
+	flag.BoolVar(&h, "h", false, "help")
+	flag.StringVar(&c, "c", "", "config file")
+	flag.BoolVar(&d, "d", false, "debug mode")
+}
+
+func main() {
+	flag.Parse()
+
 	lvl, ok := os.LookupEnv("LOG_LEVEL")
 	// LOG_LEVEL not set, let's default to debug
-	if !ok {
+	if !ok || d {
 		lvl = "debug"
 	}
 	// parse string, this is built-in feature of logrus
@@ -26,21 +40,11 @@ func init() {
 	}
 	// set global log level
 	logrus.SetLevel(ll)
-}
-
-var (
-	h bool
-	c string
-	d bool
-)
-
-func main() {
-	flag.BoolVar(&h, "h", false, "help")
-	flag.StringVar(&c, "c", "", "config file")
-	flag.BoolVar(&d, "d", false, "debug mode")
 
 	conf := new(config.Yaml)
 	yamlFile, err := ioutil.ReadFile(c)
+
+	logrus.Info(c)
 
 	if err != nil {
 		logrus.Infof("yamlFile.Get err #%v ", err)
@@ -53,7 +57,9 @@ func main() {
 
 	handle := WebhookHandle{}
 
-	db := DataBase{}
+	db := &DataBase{
+		settings: conf,
+	}
 	db.Ping()
 
 	router := gin.Default()

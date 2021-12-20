@@ -18,10 +18,10 @@ type DataBase struct {
 }
 
 func (db *DataBase)open() error {
-	opts := options.Client().ApplyURI(db.settings.Database.Url)
+	opts := options.Client().ApplyURI(*db.settings.Database.URL)
 	opts.Auth = &options.Credential{
-			Username: db.settings.Database.Auth.Name,
-			Password: db.settings.Database.Auth.Password,
+			Username: *db.settings.Database.Auth.Name,
+			Password: *db.settings.Database.Auth.Password,
 	}
 	client, err := mongo.NewClient(opts)
 	if err != nil {
