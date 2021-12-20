@@ -1,0 +1,3 @@
+* issue bot
+
+保存 issue 的数据
