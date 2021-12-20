@@ -44,7 +44,7 @@ func main() {
 	conf := new(config.Yaml)
 	yamlFile, err := ioutil.ReadFile(c)
 
-	logrus.Info(c)
+	logrus.Debug(c)
 
 	if err != nil {
 		logrus.Infof("yamlFile.Get err #%v ", err)

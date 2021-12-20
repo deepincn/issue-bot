@@ -15,6 +15,7 @@ type WebhookHandle struct {
 
 // WebhookHandle init
 func(m *WebhookHandle) WebhookHandle(c *gin.Context) {
+	logrus.Debug(c.Request.GetBody())
 	var event interface{}
 
 	payload, err := github.ValidatePayload(c.Request, []byte(""))
@@ -40,6 +41,8 @@ func(m *WebhookHandle) WebhookHandle(c *gin.Context) {
 		}
 		return
 	}
+
+	logrus.Debug(event)
 
 	switch event := event.(type) {
 	case *github.PingEvent:
