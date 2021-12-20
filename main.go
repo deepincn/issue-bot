@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -27,20 +28,24 @@ func init() {
 	logrus.SetLevel(ll)
 }
 
-func main() {
-	debug := os.Getenv("DEBUG_MODE")
-	conf := new(config.Yaml)
+var (
+	h bool
+	c string
+	d bool
+)
 
-	var yamlFile []byte
-	var err error
-	if debug == "TRUE" {
-		yamlFile, err = ioutil.ReadFile("config.yaml")
-	} else {
-		yamlFile, err = ioutil.ReadFile("/etc/sync/config.yaml")
-	}
+func main() {
+	flag.BoolVar(&h, "h", false, "help")
+	flag.StringVar(&c, "c", "", "config file")
+	flag.BoolVar(&d, "d", false, "debug mode")
+
+	conf := new(config.Yaml)
+	yamlFile, err := ioutil.ReadFile(c)
+
 	if err != nil {
 		logrus.Infof("yamlFile.Get err #%v ", err)
 	}
+
 	err = yaml.Unmarshal([]byte(yamlFile), conf)
 	if err != nil {
 		logrus.Fatalf("Unmarshal: %v", err)
